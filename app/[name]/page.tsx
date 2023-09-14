@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from 'next/navigation';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, MouseEventHandler, useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 
 type ClipParams = {
@@ -43,6 +43,26 @@ const Post = ({ params }: { params: { name: string } }) => {
       toast.error('Error creating post', { id: '1' });
     }
   };
+  const handleDelete = async (e: any , name : String) => {
+    e.preventDefault();
+  
+    try {
+     
+      const response = await fetch(`/api/clip/${name}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        toast.success('Clip deleted successfully', { id: '1' });
+        router.push('/'); // Redirect to the home page or a different route
+      } else {
+        toast.error('Error deleting clip', { id: '1' });
+      }
+    } catch (error) {
+      console.error('Error deleting clip:', error);
+      toast.error('Error deleting clip', { id: '1' });
+    }
+  };
 
   const [clipData, setClipData] = useState<ClipParams | null>(null);
 
@@ -72,22 +92,14 @@ const Post = ({ params }: { params: { name: string } }) => {
   }, [params.name]);
   
   const handlePasswordSubmit = () => {
-    
-  
-    
-  
-    if (clipData && clipData.password === passwordInput) {
-      
+    if (clipData && clipData.password === passwordInput) {   
       setPasswordValid(true);
-    } else {
-     
+    } else {   
       setPasswordValid(false);
       toast.error('Incorrect Password', { id: '1' });
     }
   };
-  
-
-  return (
+ return (
     <Fragment>
       <Toaster />
       <div className="w-full m-auto flex my-4">
@@ -96,7 +108,9 @@ const Post = ({ params }: { params: { name: string } }) => {
             <p className="text-white">Name: {clipData.name}</p>
             <p className="text-white">Text: {clipData.text}</p>
             <p className="text-white">URL: {clipData.url}</p>
-            <p className="text-white">Password: {clipData.password}</p>
+            {/* <p className="text-white">Password: {clipData.password}</p> */}
+            {clipData.password == "" ? <p className="text-white">Password: No Password</p> : <button className='bg-purple-300 p-4 m-4 ' onClick={(e)=>handleDelete(e,clipData.name)}>Delete Clip</button>}
+            
           </div>
         ) : (
           <div>

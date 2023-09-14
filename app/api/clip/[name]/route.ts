@@ -67,5 +67,17 @@ export const POST = async (req: Request, res: NextResponse) => {
         return NextResponse.json({ message: "error", error }, { status: 500 })
     }
 }
+export const DELETE = async (req: Request, res: NextResponse) => {
+    try {
+        const name = req.url.split("/clip/")[1];
+        // const { title, description } = await req.json();
+        await connectToDB();
+        const post =  await Clip.findOneAndDelete({name});
+        return NextResponse.json({ message: "Sucessfully deleted post" , post }, { status: 200 })
 
+
+    } catch (error) {
+        return NextResponse.json({ message: "error", error }, { status: 500 })
+    } 
+}
 

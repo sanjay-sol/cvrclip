@@ -14,21 +14,10 @@ export async function main() {
 export const GET = async (req : Request ,  res : NextResponse) => {
     try {
         // const { name } = await req.body;
-        await connectToDB();
-        const clips = await Clip.find({});
-        return NextResponse.json({message:"Success",clips},{status:200});
+        // await connectToDB();
+        // const clips = await Clip.find({});
+        return NextResponse.json({message:"Not this time bro 😤"},{status:200});
     } catch (error : any) {
         return NextResponse.json({message: "error" , error:error.message } , {status:501})
     } 
-}
-export const POST =async (req : Request ,  res : NextResponse) => {
-    try {
-        const {name , text ,  url , password} = await req.json();
-        await connectToDB();
-        const clip = await Clip.create({name , text ,  url , password} );
-        return NextResponse.json({message : "Success " , clip} , {status:201});
-    } catch (error) {
-        return NextResponse.json({message : "Error " , error} , {status:500});
-    } 
-    
 }
