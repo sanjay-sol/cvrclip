@@ -10,8 +10,10 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Create a New Clip</h1>
-      {/* <CreateClipForm /> */}
+      <h1>About clip</h1>
+      <p>clip is a simple, open source, privacy-focused alternative to pastebin.</p>
+      <p>It's built with Next.js, Prisma, and PostgreSQL.</p>
+      <p>It's free to use and anyone can create a clip.</p>
     </div>
   );
 }

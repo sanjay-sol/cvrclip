@@ -10,7 +10,7 @@ type ClipParams = {
   password: string;
 };
 
-const EditBlog = ({ params }: { params: { name: string } }) => {
+const Post = ({ params }: { params: { name: string } }) => {
 //   const router = useRouter();
   const router = useRouter();
 
@@ -57,8 +57,8 @@ const EditBlog = ({ params }: { params: { name: string } }) => {
         console.log(posts);
 
         setClipData(posts); 
-      } catch (error) {
-        console.error('Error fetching clip by name:', error);
+      } catch (error : any) {
+        console.error('Error fetching clip by name:', error.message);
         toast.error('Error fetching blog', { id: '1' });
       }
     };
@@ -129,5 +129,4 @@ const EditBlog = ({ params }: { params: { name: string } }) => {
   );
 };
 
-export default EditBlog;
-
+export default Post
