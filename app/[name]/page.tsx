@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from 'next/navigation';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 
 type ClipParams = {
@@ -11,31 +11,29 @@ type ClipParams = {
 };
 
 const Post = ({ params }: { params: { name: string } }) => {
-//   const router = useRouter();
   const router = useRouter();
 
   // Define state variables for each input field
-  const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [url, setUrl] = useState('');
-  const [password, setPassword] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordValid, setPasswordValid] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      
-      const name =  params.name;
+      const name = params.name;
       const response = await fetch(`/api/clip/${name}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name : name, text : text,url : url, password : password }),
+        body: JSON.stringify({ name: name, text: text, url: url, password: passwordInput }),
       });
 
       if (response.ok) {
-        toast.success('Post created successfully', { id: '1' });
+        toast.success('Clip created successfully', { id: '1' });
         router.push('/'); // Redirect to the home page or a different route
       } else {
         toast.error('Error creating post', { id: '1' });
@@ -45,21 +43,22 @@ const Post = ({ params }: { params: { name: string } }) => {
       toast.error('Error creating post', { id: '1' });
     }
   };
-  const [clipData, setClipData] = useState<ClipParams[]>([]);
+
+  const [clipData, setClipData] = useState<ClipParams | null>(null);
 
   useEffect(() => {
     const getClipByName = async (name: string) => {
       try {
         const response = await fetch(`/api/clip/${name}`);
         const data = await response.json();
-        const posts: ClipParams[] = data.posts;
+        const post: ClipParams = data.posts[0];
 
-        console.log(posts);
-
-        setClipData(posts); 
-      } catch (error : any) {
+        if (post) {
+          setClipData(post);
+        }
+      } catch (error: any) {
         console.error('Error fetching clip by name:', error.message);
-        toast.error('Error fetching blog', { id: '1' });
+        toast.error(`No clip with Name : ${name}`, { id: '1' });
       }
     };
 
@@ -68,65 +67,86 @@ const Post = ({ params }: { params: { name: string } }) => {
     }
   }, [params.name]);
 
+  const handlePasswordSubmit = () => {
+    if (clipData && clipData.password === passwordInput) {
+      setPasswordValid(true);
+    } else {
+      setPasswordValid(false);
+      toast.error('Incorrect Password', { id: '1' });
+    }
+  };
+
   return (
     <Fragment>
       <Toaster />
       <div className="w-full m-auto flex my-4">
-        {clipData?.length > 0 ? (
+        {clipData && passwordValid ? (
           <div>
-            <p className="text-white">Name: {clipData[0].name}</p>
-            <p className="text-white">Text: {clipData[0].text}</p>
-            <p className="text-white">URL: {clipData[0].url}</p>
-            <p className="text-white">Password: {clipData[0].password}</p>
+            <p className="text-white">Name: {clipData.name}</p>
+            <p className="text-white">Text: {clipData.text}</p>
+            <p className="text-white">URL: {clipData.url}</p>
+            <p className="text-white">Password: {clipData.password}</p>
           </div>
-        ) : 
-        
-        (
-            <div>
-              <Toaster />
-              <h1>Create a New Post</h1>
-              <form onSubmit={handleSubmit}>
-                <div>
-                  <label htmlFor="text">Text:</label>
-                  <textarea
-                    id="text"
-                    className='text-black'
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="url">URL:</label>
-                  <input
-                    type="text"
-                    id="url"
-                    className='text-black'
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="password">Password:</label>
-                  <input
-                    type="password"
-                    id="password"
-                    className='text-black'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <button type="submit">Submit</button>
-              </form>
-            </div>
-          )
-        
-        }
+        ) : (
+          <div>
+            <Toaster />
+            {clipData ? (
+              <Fragment>
+                <h1>Password Required</h1>
+                <input
+                  type="password"
+                  placeholder="Enter Password"
+                  className='text-black'
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                />
+                <button onClick={handlePasswordSubmit}>Submit Password</button>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <h1>Create a New Post</h1>
+                <form onSubmit={handleSubmit}>
+                  <div>
+                    <label htmlFor="text">Text:</label>
+                    <textarea
+                      id="text"
+                      className="text-black"
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="url">URL:</label>
+                    <input
+                      type="text"
+                      id="url"
+                      className="text-black"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="password">Password:</label>
+                    <input
+                      type="password"
+                      id="password"
+                      className="text-black"
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button type="submit">Submit</button>
+                </form>
+              </Fragment>
+            )}
+          </div>
+        )}
       </div>
     </Fragment>
   );
 };
 
-export default Post
+export default Post;

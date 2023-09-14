@@ -10,6 +10,4 @@ const ClipSchema = new mongoose.Schema({
 
 const Clip = mongoose.models.Clip || mongoose.model("Clip", ClipSchema);
 
-// const Clip = mongoose.model("Clip", ClipSchema);
-
 export default Clip;
