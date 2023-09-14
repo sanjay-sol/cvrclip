@@ -1,7 +1,11 @@
 "use client";
 import { useRouter } from 'next/navigation';
-import { Fragment, MouseEventHandler, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
+import { UploadButton } from "@uploadthing/react"; // Import the UploadButton
+import { OurFileRouter } from '../api/uploadthing/core';
+import "@uploadthing/react/styles.css";
+import Image from 'next/image';
 
 type ClipParams = {
   name: string;
@@ -18,6 +22,7 @@ const Post = ({ params }: { params: { name: string } }) => {
   const [url, setUrl] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordValid, setPasswordValid] = useState(false);
+   const [uploadedFiles, setUploadedFiles] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +34,7 @@ const Post = ({ params }: { params: { name: string } }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: name, text: text, url: url, password: passwordInput }),
+        body: JSON.stringify({ name: name, text: text, url: uploadedFiles, password: passwordInput }),
       });
 
       if (response.ok) {
@@ -43,15 +48,26 @@ const Post = ({ params }: { params: { name: string } }) => {
       toast.error('Error creating post', { id: '1' });
     }
   };
-  const handleDelete = async (e: any , name : String) => {
+
+  // Handle file upload completion
+  const handleFileUploadComplete = (res: any) => {
+    // Extract the uploaded file URLs and add them to the state
+    if(res){
+
+      const fileUrls = res[0].url;
+      console.log("fileUrls : ", fileUrls);
+      setUploadedFiles(fileUrls);
+    }
+  };
+
+  const handleDelete = async (e: any, name: string) => {
     e.preventDefault();
-  
+
     try {
-     
       const response = await fetch(`/api/clip/${name}`, {
         method: 'DELETE',
       });
-  
+
       if (response.ok) {
         toast.success('Clip deleted successfully', { id: '1' });
         router.push('/'); // Redirect to the home page or a different route
@@ -77,7 +93,6 @@ const Post = ({ params }: { params: { name: string } }) => {
           setClipData(post);
           if (post.password == "") {
             setPasswordValid(true);
-            
           }
         }
       } catch (error: any) {
@@ -90,16 +105,17 @@ const Post = ({ params }: { params: { name: string } }) => {
       getClipByName(params.name);
     }
   }, [params.name]);
-  
+
   const handlePasswordSubmit = () => {
-    if (clipData && clipData.password === passwordInput) {   
+    if (clipData && clipData.password === passwordInput) {
       setPasswordValid(true);
-    } else {   
+    } else {
       setPasswordValid(false);
       toast.error('Incorrect Password', { id: '1' });
     }
   };
- return (
+
+  return (
     <Fragment>
       <Toaster />
       <div className="w-full m-auto flex my-4">
@@ -107,10 +123,21 @@ const Post = ({ params }: { params: { name: string } }) => {
           <div>
             <p className="text-white">Name: {clipData.name}</p>
             <p className="text-white">Text: {clipData.text}</p>
-            <p className="text-white">URL: {clipData.url}</p>
-            {/* <p className="text-white">Password: {clipData.password}</p> */}
-            {clipData.password == "" ? <p className="text-white">Password: No Password</p> : <button className='bg-purple-300 p-4 m-4 ' onClick={(e)=>handleDelete(e,clipData.name)}>Delete Clip</button>}
-            
+            <a href={clipData.url} target="_blank" rel="noopener noreferrer" download>
+            {/* <Image src={clipData.url} width={20} height={20} alt="image"  /> */} file
+          </a>
+            <p className="text-white">url: {clipData.url}</p>
+            {/* <p className="text-white">URLs:</p> */}
+            {/* <ul>
+              {clipData.url.map((fileUrl, index) => (
+                <li key={index}>
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                    File {index + 1}
+                  </a>
+                </li>
+              ))}
+            </ul> */}
+            {clipData.password == "" ? <p className="text-white">Password: No Password</p> : <button className='bg-purple-300 p-4 m-4' onClick={(e) => handleDelete(e, clipData.name)}>Delete Clip</button>}
           </div>
         ) : (
           <div>
@@ -143,13 +170,14 @@ const Post = ({ params }: { params: { name: string } }) => {
                   </div>
                   <div>
                     <label htmlFor="url">URL:</label>
-                    <input
-                      type="text"
-                      id="url"
-                      className="text-black"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      
+                    {/* Add the UploadButton for file uploads */}
+                    <UploadButton<OurFileRouter>
+                      // acceptedFileTypes={['image/*']}
+                      endpoint="mediaPost"
+                      onClientUploadComplete={handleFileUploadComplete}
+                      onUploadError={(error: Error) => {
+                        alert(`ERROR! ${error.message}`);
+                      }}
                     />
                   </div>
                   <div>
@@ -160,7 +188,6 @@ const Post = ({ params }: { params: { name: string } }) => {
                       className="text-black"
                       value={passwordInput}
                       onChange={(e) => setPasswordInput(e.target.value)}
-                      
                     />
                   </div>
                   <button type="submit">Submit</button>

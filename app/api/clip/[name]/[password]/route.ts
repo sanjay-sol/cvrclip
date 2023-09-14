@@ -22,8 +22,8 @@ export const GET = async (req: Request, res: NextResponse) => {
   
       const name = parts[5];
       const password = parts[6];
-  console.log("name"+name)
-  console.log("password"+password)
+  console.log("pssword / name"+name)
+  console.log("password / password"+password)
       // Retrieve the post based on the 'name' parameter
       const posts = await Clip.find({ name });
   
