@@ -55,6 +55,10 @@ const Post = ({ params }: { params: { name: string } }) => {
 
         if (post) {
           setClipData(post);
+          if (post.password == "") {
+            setPasswordValid(true);
+            
+          }
         }
       } catch (error: any) {
         console.error('Error fetching clip by name:', error.message);
@@ -66,15 +70,22 @@ const Post = ({ params }: { params: { name: string } }) => {
       getClipByName(params.name);
     }
   }, [params.name]);
-
+  
   const handlePasswordSubmit = () => {
+    
+  
+    
+  
     if (clipData && clipData.password === passwordInput) {
+      
       setPasswordValid(true);
     } else {
+     
       setPasswordValid(false);
       toast.error('Incorrect Password', { id: '1' });
     }
   };
+  
 
   return (
     <Fragment>
@@ -124,7 +135,7 @@ const Post = ({ params }: { params: { name: string } }) => {
                       className="text-black"
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
-                      required
+                      
                     />
                   </div>
                   <div>
@@ -135,7 +146,7 @@ const Post = ({ params }: { params: { name: string } }) => {
                       className="text-black"
                       value={passwordInput}
                       onChange={(e) => setPasswordInput(e.target.value)}
-                      required
+                      
                     />
                   </div>
                   <button type="submit">Submit</button>
