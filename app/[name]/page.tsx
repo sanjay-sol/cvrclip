@@ -87,8 +87,6 @@ const Post = ({ params }: PostProps) => {
       setUploadedFiles(res[0].url);
       setFileName(res[0].name);
       setFileSize(res[0].size);
-      console.log(res);
-      console.log(res[0]);
     }
   };
 
