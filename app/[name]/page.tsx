@@ -38,6 +38,9 @@ const Post = ({ params }: PostProps) => {
   const [createdAt, setCreatedAt] = useState<string>('');
   const [expiringAt, setExpiringAt] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
+  const [fileName, setFileName] = useState<string>('');
+  const [fileSize, setFileSize] = useState<number>(0);
+  
 
 
 
@@ -79,9 +82,13 @@ const Post = ({ params }: PostProps) => {
     }
   };
 
-  const handleFileUploadComplete = (res: UploadFileResponse[] | undefined) => {
+  const handleFileUploadComplete = async (res: UploadFileResponse[] | undefined) => {
     if (res) {
       setUploadedFiles(res[0].url);
+      setFileName(res[0].name);
+      setFileSize(res[0].size);
+      console.log(res);
+      console.log(res[0]);
     }
   };
 
@@ -301,6 +308,8 @@ const Post = ({ params }: PostProps) => {
                                   alert(`ERROR! ${error.message}`);
                                 }}
                               />
+                              {fileSize > 0 && <p className='text-gray-400'>{fileName} | {Math.round(fileSize/1000)} kb</p>}
+                              
                             </div>
 
                             <div className='flex items-center justify-start m-3 '>
