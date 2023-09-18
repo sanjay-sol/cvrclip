@@ -253,7 +253,7 @@ const Post = ({ params }: PostProps) => {
                       <Fragment>
                         <div className=''>
 
-                          <h1 className=' flex flex-col items-center p-5 text-3xl pl-3 text-gray-600 font-extrabold  font-serif'>Create a New Clip</h1>
+                          <h1 className=' flex flex-col items-center p-5 text-3xl pl-3 text-gray-400 font-extrabold  font-serif'>Create a New Clip</h1>
                           <form onSubmit={handleSubmit}>
 
 
@@ -293,7 +293,7 @@ const Post = ({ params }: PostProps) => {
                             </div>
                             <div className='flex items-center flex-col pt-4 pb-4 bg-slate-900 m-3'>
                               {/* <label htmlFor="url" className='pl-4 pr-4'>URL:</label> */}
-                              <p className='text-gray-400 pb-2' >Select only one file</p>
+                              <p className='text-gray-400 pb-2' >Select only one file | <span className='text-red-600'> Max size : 16 MB</span></p>
                               <UploadButton<OurFileRouter>
                                 endpoint="mediaPost"
                                 onClientUploadComplete={handleFileUploadComplete}
