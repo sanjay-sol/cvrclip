@@ -106,7 +106,7 @@ const Post = ({ params }: PostProps) => {
       }
     } catch (error) {
       console.error('Error deleting clip:', error);
-      toast.error('Error deleting clip', { id: '1' });
+     
     }
   };
 
@@ -131,7 +131,7 @@ const Post = ({ params }: PostProps) => {
         }
       } catch (error: any) {
         console.error('Error fetching clip by name:', error.message);
-        toast.error(`No clip with Name : ${name}`, { id: '1' });
+        // toast.error(`No clip with Name : ${name}`, { id: '1' });
         setShow(true);
       } finally {
         setLoading(false);
