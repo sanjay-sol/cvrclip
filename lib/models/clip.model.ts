@@ -1,8 +1,9 @@
+import { timeStamp } from "console";
 import mongoose from "mongoose";
 
 
 
-const ClipSchema = new mongoose.Schema({
+const ClipSchema2 = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -16,10 +17,21 @@ const ClipSchema = new mongoose.Schema({
     url: {
         type: String
     },
-    password: { type: String },
+    password: {
+        type: String
+    },
+    expirationTime: {
+        type: Number, // Store expiration time as a date
+      },
+    //   viewed: {
+    //     type: Boolean,
+    //     default: false,
+    //   },
+},{
+    timestamps: true
+}
+);
 
-});
+const Clip2 = mongoose.models.Clip2 || mongoose.model("Clip2", ClipSchema2);
 
-const Clip = mongoose.models.Clip || mongoose.model("Clip", ClipSchema);
-
-export default Clip;
+export default Clip2;

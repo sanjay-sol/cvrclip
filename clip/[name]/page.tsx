@@ -8,6 +8,8 @@ type ClipParams = {
     text: string;
     url: string;
     password: string;
+    expirationTime: number;
+
 };
 
 const EditBlog = ({ params }: { params: { name: string } }) => {
@@ -53,8 +55,6 @@ const EditBlog = ({ params }: { params: { name: string } }) => {
                 const response = await fetch(`/api/clip/${name}`);
                 const data = await response.json();
                 const posts: ClipParams[] = data.posts;
-
-                console.log(posts);
 
                 setClipData(posts);
             } catch (error) {

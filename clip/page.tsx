@@ -60,7 +60,6 @@ const Post = ({ params } : PostProps) => {
     if(res){
 
       const fileUrls = res[0].url;
-      console.log("fileUrls : ", fileUrls);
       setUploadedFiles(fileUrls);
     }
   };

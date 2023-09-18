@@ -23,9 +23,6 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
- 
-      console.log("file url", file.url);
     }),
     mediaPost: f({
       image: { maxFileSize: "2MB", maxFileCount: 4 },

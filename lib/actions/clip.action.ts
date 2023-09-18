@@ -1,12 +1,6 @@
 
-
 import Clip from "../models/clip.model";
 import { connectToDB } from "../mongoose"
-
-// export async function addClip() : Promise<void> {
-//     await connectToDB();
-//     console.log("Adding clip");
-// }
 interface Params {
     name: string;
     text: string;
@@ -62,9 +56,9 @@ export async function updateClip({
             { upsert: true }
         );
 
-        // if (path === "/profile/edit") {
-        //     revalidatePath(path);
-        // }
+        if (path === "/profile/edit") {
+            revalidatePath(path);
+        }
     } catch (error: any) {
         throw new Error(`Failed to create/update user: ${error.message}`);
     }
